@@ -14,6 +14,8 @@ BOT_NAME = 'LRC'
 SPIDER_MODULES = ['LRC.spiders']
 NEWSPIDER_MODULE = 'LRC.spiders'
 
+# LOG_ENABLED = False
+
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'my scrapy test_bot'
