@@ -8,10 +8,10 @@
 import scrapy
 
 
-class LRCforumIndex(scrapy.Item):
+class LRCforumItem(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field()
     post_id = scrapy.Field()
     url = scrapy.Field()
-    num_posts = scrapy.Field()
-    last_post = scrapy.Field()
+    post_count = scrapy.Field()
+    timestamp = scrapy.Field()
