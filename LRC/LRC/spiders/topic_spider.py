@@ -4,6 +4,7 @@
 import scrapy
 import re
 from LRC.items import LRCforumItem
+MAX_PAGES = 10
 
 
 class TopicSpider(scrapy.Spider):
@@ -22,6 +23,7 @@ class TopicSpider(scrapy.Spider):
     """
 
     def parse(self, response):
+        count = 0
 
         for sel in response.xpath("//li[@class='row']"):
             item = LRCforumItem()
@@ -37,5 +39,21 @@ class TopicSpider(scrapy.Spider):
             url_sel = tit.xpath("a/@href")
             item['url'] = url_sel.extract()
             item['post_id'] = url_sel.re("thread=(\d+)")
-            # print("{}\n{}\n{}\n{}\n".format(timestamp, title, url, post_count))
+
             yield item
+
+        next_page = response.xpath(
+            "//nav/ul[@class='pagination']/li/a[text()='\xbb']/@href")
+
+        if next_page and (count < MAX_PAGES):
+            url = response.urljoin(next_page[0].extract())
+            count += 1
+            yield scrapy.Request(url, self.parse)
+
+"""
+<nav>
+  <ul class="pagination">
+
+    <li class="disabled"><a href="#">&laquo;</a></li><li class="active"><a href='#'>1</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=1">2</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=2">3</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=3">4</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=4">5</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=5">6</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=6">7</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=7">8</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=8">9</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=9">10</a></li><li><a href="http://www.letsrun.com/forum/forum.php?board=1&page=1">&raquo;</a></li>  </ul>
+</nav>
+"""
