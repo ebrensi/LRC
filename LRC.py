@@ -1,25 +1,19 @@
 #!/usr/bin/env python
 
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 04 21:55:21 2015
-
-@author: Efrem
-"""
 
 import pandas as pd
 from bs4 import BeautifulSoup
 from collections import Counter
 import os.path
 import requests
+import sys
 
 
-def thread_list(max_number_of_pages=10):
+def thread_list(max_number_of_pages=10, outfile="LRCtopics.csv"):
     # get page source and create a BeautifulSoup object based on it
     print("Reading threadlist pages...")
     headers = {
-        'User-Agent': "Efrem",
-        'From': 'BarefootEfrem@gmail.com'
+        'User-Agent': "my little scraper",
     }
 
     url_base = "http://www.letsrun.com/forum/forum.php"
@@ -76,11 +70,9 @@ def thread_list(max_number_of_pages=10):
                        u'Title': title,
                        u'Count': post_count})
 
-    filename = "LRCtopics.csv"
-    df.to_csv(filename, encoding='utf-8', index=False)
+    df.to_csv(outfile, encoding='utf-8', index=False)
 
     return df
-################
 
 
 def scrape_thread(thread_num):
@@ -191,10 +183,19 @@ def word_freq(thread_index):
         df_all[thread_num] = df['percent']
     return df_all
 
-
+"""
 tl = pd.read_csv('LRCtopics.csv')
 popular = (tl.Count > 100)
 print(tl[popular][['Msg #', 'Count']])
 thread_index = tl['Msg #'][popular].tolist()
 df_all = word_freq(thread_index)
 df_all.to_pickle('word_counts.pkl')
+"""
+
+
+def main():
+    df = thread_list(10, "LRCtopics_diy.csv")
+
+
+if __name__ == "__main__":
+    main()
