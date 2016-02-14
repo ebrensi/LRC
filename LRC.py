@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from collections import Counter
 import os.path
 import requests
-import sys
 
 
 def thread_list(max_number_of_pages=10, outfile="LRCtopics.csv"):
@@ -31,7 +30,7 @@ def thread_list(max_number_of_pages=10, outfile="LRCtopics.csv"):
         # http://www.letsrun.com/forum/forum.php?board=1&page=page_num
         payload = {'board': str(1), 'page': page_num - 1}
         r = requests.get(url_base, headers=headers, params=payload)
-        soup = BeautifulSoup(r.text)
+        soup = BeautifulSoup(r.text, "lxml")
 
         for row_tag in soup.select("li.row"):
             if (row_tag.find(class_="title ") and
